@@ -1,0 +1,6 @@
+@host = http://localhost:5246
+
+GET {host}}/Games/
+Accept: application/json
+
+###
