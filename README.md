@@ -1,6 +1,6 @@
 # BoardGameInventory
 
-A small ASP.NET Core practice project for learning backend CRUD development before building the larger TableMate product. The current milestone is a working, in-memory board-game inventory API.
+A small ASP.NET Core practice project for learning backend CRUD development before building the larger TableMate product. The current milestone is a working, in-memory board-game inventory API with a local PostgreSQL development environment.
 
 ## Current capabilities
 
@@ -11,7 +11,7 @@ A small ASP.NET Core practice project for learning backend CRUD development befo
 - Delete a game
 - Return appropriate HTTP results for successful requests and missing IDs
 
-The API currently stores data in memory, so the inventory resets whenever the application restarts. PostgreSQL persistence is the next milestone.
+The API currently stores game data in memory, so the inventory resets whenever the application restarts. A local PostgreSQL database is now available through Docker Compose, but EF Core persistence is the next milestone.
 
 ## Technology
 
@@ -19,13 +19,16 @@ The API currently stores data in memory, so the inventory resets whenever the ap
 - ASP.NET Core minimal API
 - Postman for manual API testing
 - Git and GitHub
-- Docker Engine and Docker Compose in WSL Ubuntu, ready for the future PostgreSQL setup
+- Docker Engine and Docker Compose in WSL Ubuntu
+- Docker Desktop for viewing and managing local containers
+- PostgreSQL 17 through Docker Compose
 
 ## Run locally
 
 ### Prerequisites
 
 - .NET 10 SDK
+- WSL Ubuntu with Docker Engine and Docker Compose installed
 
 ### Start the API
 
@@ -42,6 +45,43 @@ Now listening on: http://localhost:5246
 ```
 
 Use the address shown by your own terminal; the port can change between runs.
+
+### Start PostgreSQL
+
+The API does not use PostgreSQL yet, but the local database environment is ready for the upcoming EF Core persistence milestone.
+
+1. Create your local configuration file once:
+
+   ```bash
+   cp .env.example .env
+   ```
+
+2. Open `.env` and replace `POSTGRES_PASSWORD` with a local password.
+3. Start PostgreSQL.
+
+    ```bash
+    docker compose up -d
+    ```
+
+4. Confirm the container is healthy.
+
+    ```bash
+    docker compose ps
+    ```
+
+5. Stop PostgreSQL while keeping its data.
+
+    ```bash
+    docker compose down
+    ```
+
+### Reset local database data
+
+This permanently deletes the local PostgreSQL data volume:
+
+```bash
+docker compose down -v  
+```
 
 ## API endpoints
 
@@ -84,17 +124,18 @@ Content-Type: application/json
 ## Project structure
 
 ```text
+compose.yaml                    Local PostgreSQL container recipe
+.env.example                    Safe template for local configuration
 src/BoardGameInventory.Api/
-  Models/                 API request and response shapes
-  Program.cs              Endpoint definitions and temporary in-memory data
+  Models/                       API request and response shapes
+  Program.cs                    Endpoint definitions and temporary in-memory data
 ```
 
 ## Learning roadmap
 
-1. Add PostgreSQL in Docker Compose.
-2. Persist games with EF Core and an initial migration.
-3. Add validation and automated API tests.
-4. Add categories, filtering, API documentation, CI, and—later—a small React UI.
+1. Persist games with EF Core and an initial migration.
+2. Add validation and automated API tests.
+3. Add categories, filtering, API documentation, CI, and—later—a small React UI.
 
 ## Status
 
